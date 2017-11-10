@@ -1,0 +1,31 @@
+{
+  "name": "paper-trail",
+  "version": "0.0.1",
+  "description": "Follow the paper-trail",
+  "main": "index.js",
+  "scripts": {
+    "test": "tape 'test/**/*.js'"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/haroun/paper-trail.git"
+  },
+  "keywords": [
+    "paper-trail",
+    "finance",
+    "money"
+  ],
+  "author": "Harouna Traore",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/haroun/paper-trail/issues"
+  },
+  "homepage": "https://github.com/haroun/paper-trail#readme",
+  "devDependencies": {
+    "xo": "^0.18.2"
+  },
+  "xo": {
+    "space": true,
+    "semicolon": false
+  }
+}

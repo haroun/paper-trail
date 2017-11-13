@@ -1,12 +1,18 @@
+const transaction = require('./transaction')
+
 const account = {
-  id: null,
+  number: null,
   balance: 0,
+  owner: null,
+  transactions: [],
 
   withdraw: event => {
+    this.transactions = this.transactions.concat(transaction(event.attributes || {}))
     this.balance += Math.abs(event.amount || 0)
   },
 
   deposit: event => {
+    this.transactions = this.transactions.concat(transaction(event.attributes || {}))
     this.balance -= Math.abs(event.amount || 0)
   },
 

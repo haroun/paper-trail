@@ -6,7 +6,8 @@ const accountDeposited = Object.assign(
   {
     name: 'account-deposited',
     attributes: {
-      author: null,
+      accountNumber: null,
+      owner: null,
       amount: null
     }
   }

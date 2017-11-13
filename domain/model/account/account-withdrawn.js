@@ -6,7 +6,8 @@ const accountWithdrawn = Object.assign(
   {
     name: 'account-withdrawn',
     attributes: {
-      author: null,
+      accountNumber: null,
+      owner: null,
       amount: null
     }
   }

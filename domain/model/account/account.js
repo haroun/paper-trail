@@ -1,28 +1,59 @@
-const transaction = require('./transaction')
+const accountOpened = require('./account-opened')
+const accountDeposited = require('./account-deposited')
+const accountWithdrawn = require('./account-withdrawn')
 
 const account = {
   number: null,
-  balance: 0,
   owner: null,
-  transactions: [],
+  balance: 0,
+  // Keep this? events: [],
 
-  withdraw: event => {
-    this.transactions = this.transactions.concat(transaction(event.attributes || {}))
-    this.balance += Math.abs(event.amount || 0)
+  open: command => {
+    const number = 'FIXME: generate unique id'
+    const owner = command.owner || ''
+    const initialBalance = Math.abs(command.initialBalance || 0)
+    const event = accountOpened(number, owner, initialBalance)
+
+    if (owner === '') {
+      throw new TypeError('owner MUST be filled')
+    }
+
+    return event
   },
 
-  deposit: event => {
-    this.transactions = this.transactions.concat(transaction(event.attributes || {}))
-    this.balance -= Math.abs(event.amount || 0)
+  withdraw: command => {
+    const amount = Math.abs(command.amount || 0)
+    const event = accountWithdrawn(amount)
+
+    if (amount === 0) {
+      throw new TypeError('amount MUST be different than 0')
+    }
+
+    return event
+  },
+
+  deposit: command => {
+    const amount = Math.abs(command.amount || 0)
+    const event = accountDeposited(amount)
+
+    if (amount === 0) {
+      throw new TypeError('amount MUST be different than 0')
+    }
+
+    return event
   },
 
   handle: event => {
     const {name = ''} = event
 
-    if (name === 'account-deposited') {
-      return this.deposit(event)
+    if (name === 'account-opened') {
+      this.number = event.number
+      this.owner = event.owner
+      this.balance = event.initialBalance
+    } else if (name === 'account-deposited') {
+      this.balance += event.amount
     } else if (name === 'account-withdrawn') {
-      return this.withdraw(event)
+      this.balance -= event.amount
     }
   }
 }

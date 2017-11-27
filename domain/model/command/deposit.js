@@ -4,7 +4,7 @@ const depositMixin = ({id = null, amount = 0}) => {
   }
 
   if (amount <= 0) {
-    throw new TypeError('amount must be negative')
+    throw new TypeError('amount must be positive')
   }
 
   return {

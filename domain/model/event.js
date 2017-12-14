@@ -1,35 +1,41 @@
+const uuid = require('./uuid')
+
 const eventMixin = ({
-  version = null,
-  occuredAt = null,
+  id = null,
+  version = -1,
+  type = null,
   accountNumber = null,
-  type = null
-}) => {
-  if (version === null) {
+  occuredAt = null
+} = {}) => {
+  if (id === null) {
+    id = uuid.generate()
+  }
+
+  if (version === -1) {
     throw new TypeError('version cannot be null')
-  }
-
-  if (occuredAt === null) {
-    throw new TypeError('occuredAt cannot be null')
-  }
-
-  if (accountNumber === null) {
-    throw new TypeError('accountNumber cannot be null')
   }
 
   if (type === null) {
     throw new TypeError('type cannot be null')
   }
 
-  const id = null
-  const noticedAt = null
+  if (accountNumber === null) {
+    throw new TypeError('accountNumber cannot be null')
+  }
+
+  if (occuredAt === null) {
+    throw new TypeError('occuredAt cannot be null')
+  }
+
+  const noticedAt = Date.now()
 
   return {
     id: () => id,
+    type: () => type,
     version: () => version,
-    occuredAt: () => occuredAt,
-    noticedAt: () => noticedAt,
     accountNumber: () => accountNumber,
-    type: () => type
+    occuredAt: () => occuredAt,
+    noticedAt: () => noticedAt
   }
 }
 

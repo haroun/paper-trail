@@ -2,11 +2,11 @@ const accountOpened = require('./account-opened')
 const accountDeposited = require('./account-deposited')
 const accountWithdrawn = require('./account-withdrawn')
 
-const accountMixin = () => {
-  const number = null
+const accountMixin = ({number = null} = {}) => {
   const owner = null
   const balance = 0
   const events = []
+
   let version = -1
 
   const load = (events, handler) => {

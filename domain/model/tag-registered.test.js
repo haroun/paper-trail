@@ -7,6 +7,7 @@ test('event', assert => {
   const actual = tagRegistered({name: 'test', owner: {firstname: 'test', lastname: 'test'}})
   const expected = {
     name: 'tag-registered',
+    occuredAt: '',
     attributes: {
       name: 'test',
       owner: {

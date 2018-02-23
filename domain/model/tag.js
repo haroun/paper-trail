@@ -1,4 +1,6 @@
-const tagMixin = (owner = []) => {
+const tagRegistered = require('./tag-registered')
+
+const tagMixin = (tags = []) => {
   const defaults = [
     'salary',
     'bank',
@@ -24,10 +26,11 @@ const tagMixin = (owner = []) => {
   ]
 
   return {
-    all: () => [...defaults, ...owner],
-    register: ({name}) => { // FIXME add owner for event
-      // FIXME dispatch tag-registered event
-      owner = owner.concat(name)
+    all: () => [...defaults, ...tags],
+    register: ({name, owner}) => {
+      tags = tags.concat(name)
+
+      return tagRegistered({name, owner})
     }
   }
 }

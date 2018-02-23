@@ -29,3 +29,16 @@ test('register for multiple owner', assert => {
 
   assert.end()
 })
+
+test('register event', assert => {
+  const message = 'should return a tag-registered event'
+
+  const tags = tag()
+
+  const actual = tags.register({name: 'caf', owner: {firstname: 'test', lastname: 'test'}}).name
+  const expected = 'tag-registered'
+
+  assert.equal(actual, expected, message)
+
+  assert.end()
+})

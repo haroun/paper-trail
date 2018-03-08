@@ -1,10 +1,12 @@
+const uuid = require('./../uuid')
 const accountOpened = require('./account-opened')
 const accountDeposited = require('./account-deposited')
 const accountWithdrawn = require('./account-withdrawn')
 
-const accountMixin = ({number = null} = {}) => {
-  const owner = null
-  const balance = 0
+const accountMixin = () => {
+  let number = null
+  let owner = null
+  let balance = 0
   const events = []
 
   let version = -1
@@ -25,55 +27,56 @@ const accountMixin = ({number = null} = {}) => {
     version: () => version,
     events: () => events,
 
-    open: command => {
-      const number = 'FIXME: generate unique id'
-      const owner = command.owner || ''
-      const initialBalance = Math.abs(command.initialBalance || 0)
-      const event = accountOpened(number, owner, initialBalance)
-
+    open: ({number = '', owner = '', initialBalance = 0}) => {
+      if (number === '') {
+        throw new TypeError('number MUST be filled')
+      }
       if (owner === '') {
         throw new TypeError('owner MUST be filled')
       }
-
-      return event
-    },
-
-    withdraw: command => {
-      const amount = Math.abs(command.amount || 0)
-      const event = accountWithdrawn(amount)
-
-      if (amount === 0) {
-        throw new TypeError('amount MUST be different than 0')
+      if (!Number.isInteger(initialBalance)) {
+        throw new TypeError('initialBalance MUST be a number')
       }
 
-      return event
+      return accountOpened({number, owner, balance: initialBalance})
     },
 
-    deposit: command => {
-      const amount = Math.abs(command.amount || 0)
-      const event = accountDeposited(amount)
-
-      if (amount === 0) {
-        throw new TypeError('amount MUST be different than 0')
+    withdraw: ({author, amount = 0}) => {
+      if (owner !== author) {
+        throw new TypeError('owner MUST match')
+      }
+      if (!Number.isInteger(amount) || amount < 1) {
+        throw new TypeError('amount MUST be a positive integer')
       }
 
-      return event
+      return accountWithdrawn({amount: Math.abs(amount)})
     },
 
-    handle: event => {
-      const {name = ''} = event
+    deposit: ({author, amount = 0}) => {
+      if (owner !== author) {
+        throw new TypeError('owner MUST match')
+      }
+      if (!Number.isInteger(amount) || amount < 1) {
+        throw new TypeError('amount MUST be a positive integer')
+      }
 
-      if (name === 'account-opened') {
-        this.number = event.number
-        this.owner = event.owner
-        this.balance = event.initialBalance
-      } else if (name === 'account-deposited') {
-        this.balance += event.amount
-      } else if (name === 'account-withdrawn') {
-        this.balance -= event.amount
+      return accountDeposited({amount: Math.abs(amount)})
+    },
+
+    apply: ({event}) => {
+      const {type = ''} = event
+
+      if (type === 'account-opened') {
+        number = event.number
+        owner = event.owner
+        balance = event.initialBalance
+      } else if (type === 'account-deposited') {
+        balance += event.amount
+      } else if (type === 'account-withdrawn') {
+        balance -= event.amount
       }
     }
   }
 }
 
-module.exports.account = accountMixin
+module.exports = accountMixin

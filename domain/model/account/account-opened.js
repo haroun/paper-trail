@@ -1,15 +1,14 @@
-const event = require('./../event')
-
-const accountOpened = Object.assign(
-  {},
-  event,
-  {
-    name: 'account-opened',
-    attributes: {
-      accountNumber: null,
-      owner: null
+const accountOpened = ({number, owner, balance}) => {
+  return Object.freeze(
+    {
+      type: 'account-opened',
+      attributes: {
+        number,
+        owner,
+        balance
+      }
     }
-  }
-)
+  )
+}
 
-module.exports.accountOpened = accountOpened
+module.exports = accountOpened

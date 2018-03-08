@@ -4,4 +4,4 @@ const uuid = {
   generate: () => cuid()
 }
 
-module.exports.uuid = uuid
+module.exports = uuid

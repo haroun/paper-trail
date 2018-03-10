@@ -1,16 +1,16 @@
-const event = require('./../event')
+const TYPE = 'account-withdrawn'
 
-const accountWithdrawn = Object.assign(
-  {},
-  event,
-  {
-    name: 'account-withdrawn',
-    attributes: {
-      accountNumber: null,
-      owner: null,
-      amount: null
+const accountWithdrawn = ({number, amount}) => {
+  return Object.freeze(
+    {
+      type: TYPE,
+      attributes: {
+        number,
+        amount
+      }
     }
-  }
-)
+  )
+}
 
-module.exports.accountWithdrawn = accountWithdrawn
+module.exports = accountWithdrawn
+module.exports.TYPE = TYPE

@@ -1,7 +1,9 @@
+const TYPE = 'account-opened'
+
 const accountOpened = ({number, owner, balance}) => {
   return Object.freeze(
     {
-      type: 'account-opened',
+      type: TYPE,
       attributes: {
         number,
         owner,
@@ -12,3 +14,4 @@ const accountOpened = ({number, owner, balance}) => {
 }
 
 module.exports = accountOpened
+module.exports.TYPE = TYPE

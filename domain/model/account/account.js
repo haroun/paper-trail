@@ -10,9 +10,9 @@ const accountMixin = () => {
   let number = null
   let owner = null
   let balance = 0
-  const events = []
   let isOpen = false
 
+  const events = []
   let version = -1
 
   const load = (events, handler) => {
@@ -66,12 +66,13 @@ const accountMixin = () => {
     return accountWithdrawn({number, amount: Math.abs(amount)})
   }
 
-  return {
+  return Object.freeze({
     number: () => number,
     owner: () => owner,
     balance: () => balance,
     version: () => version,
     events: () => events,
+    load,
 
     handle: ({command}) => {
       const {type = ''} = command
@@ -103,7 +104,7 @@ const accountMixin = () => {
         throw new TypeError(`Unknown "${type}" event`)
       }
     }
-  }
+  })
 }
 
 module.exports = accountMixin

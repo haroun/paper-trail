@@ -1,11 +1,13 @@
 const TYPE = 'account-deposited'
 
-const accountDeposited = ({number, amount}) => Object.freeze(
+const accountDeposited = ({number, date, amount, description}) => Object.freeze(
   {
     type: TYPE,
     attributes: {
       number,
-      amount
+      date,
+      amount,
+      description
     }
   }
 )

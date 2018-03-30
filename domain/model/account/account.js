@@ -38,7 +38,7 @@ const accountMixin = () => {
     return accountOpened({number, owner, balance: initialBalance})
   }
 
-  const deposit = ({author, amount = 0}) => {
+  const deposit = ({author, amount = 0, date, description}) => {
     if (!isOpen) {
       throw error.accountNotOpen('account MUST be opened to make a deposit')
     }
@@ -48,11 +48,17 @@ const accountMixin = () => {
     if (!Number.isInteger(amount) || amount < 1) {
       throw new TypeError('amount MUST be a positive integer')
     }
+    if (!date) {
+      throw new TypeError('date MUST be filled')
+    }
+    if (!description) {
+      throw new TypeError('description MUST be filled')
+    }
 
-    return accountDeposited({number, amount: Math.abs(amount)})
+    return accountDeposited({number, date, amount: Math.abs(amount), description})
   }
 
-  const withdraw = ({author, amount = 0}) => {
+  const withdraw = ({author, amount = 0, date, description}) => {
     if (!isOpen) {
       throw error.accountNotOpen('account MUST be opened to make a withdrawal')
     }
@@ -62,8 +68,14 @@ const accountMixin = () => {
     if (!Number.isInteger(amount) || amount < 1) {
       throw new TypeError('amount MUST be a positive integer')
     }
+    if (!date) {
+      throw new TypeError('date MUST be filled')
+    }
+    if (!description) {
+      throw new TypeError('description MUST be filled')
+    }
 
-    return accountWithdrawn({number, amount: Math.abs(amount)})
+    return accountWithdrawn({number, date, amount: Math.abs(amount), description})
   }
 
   return Object.freeze({

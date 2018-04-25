@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "lint": "xo",
-    "test": "tape 'infrastructure/**/*.test.js'"
+    "test": "tape '{,!(node_modules)/**/}/*.test.js'"
   },
   "repository": {
     "type": "git",

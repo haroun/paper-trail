@@ -1,11 +1,12 @@
 const type = 'withdraw-account'
 
-const withdrawAccount = ({number, author, amount}) => Object.freeze(
+const withdrawAccount = ({number, author, amount, date}) => Object.freeze(
   {
     type,
     number,
     author,
-    amount
+    amount,
+    date
   }
 )
 

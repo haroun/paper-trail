@@ -42,13 +42,15 @@ test('can not deposit a non opened account', assert => {
   const number = uuid.generate()
   const author = 'test'
   const amount = 12000
+  const date = '1234567890'
 
   try {
     account().handle({
       command: depositAccount({
         number,
         author,
-        amount
+        amount,
+        date
       })
     })
 
@@ -69,6 +71,7 @@ test('deposit an account', assert => {
   const number = uuid.generate()
   const author = 'test'
   const amount = 12000
+  const date = '1234567890'
   const ownerAccount = account()
   ownerAccount.apply({
     event: accountOpened({
@@ -82,14 +85,17 @@ test('deposit an account', assert => {
     command: depositAccount({
       number,
       author,
-      amount
+      amount,
+      date
     })
   })
   const expected = {
     type: accountDeposited.TYPE,
     attributes: {
       number,
-      amount
+      date,
+      amount,
+      description: null
     }
   }
 
@@ -131,6 +137,7 @@ test('withdraw an account', assert => {
   const number = uuid.generate()
   const author = 'test'
   const amount = 999
+  const date = '123456790'
   const ownerAccount = account()
   ownerAccount.apply({
     event: accountOpened({
@@ -144,14 +151,17 @@ test('withdraw an account', assert => {
     command: withdrawAccount({
       number,
       author,
-      amount
+      amount,
+      date
     })
   })
   const expected = {
     type: accountWithdrawn.TYPE,
     attributes: {
       number,
-      amount
+      amount,
+      date,
+      description: null
     }
   }
 

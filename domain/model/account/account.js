@@ -1,3 +1,4 @@
+const aggregate = require('./../aggregate')
 const accountOpened = require('./account-opened')
 const accountDeposited = require('./account-deposited')
 const accountWithdrawn = require('./account-withdrawn')
@@ -11,18 +12,6 @@ const accountMixin = () => {
   let owner = null
   let balance = 0
   let isOpen = false
-
-  const events = []
-  let version = -1
-
-  const load = (events, handler) => {
-    events.reduce((acc, event) => {
-      handler(event)
-      version = event.version
-
-      return null
-    }, null)
-  }
 
   const open = ({number = '', owner = '', initialBalance = 0}) => {
     if (number === '') {
@@ -38,7 +27,7 @@ const accountMixin = () => {
     return accountOpened({number, owner, balance: initialBalance})
   }
 
-  const deposit = ({author, amount = 0, date, description}) => {
+  const deposit = ({author, amount = 0, date, description = null}) => {
     if (!isOpen) {
       throw error.accountNotOpen('account MUST be opened to make a deposit')
     }
@@ -51,14 +40,11 @@ const accountMixin = () => {
     if (!date) {
       throw new TypeError('date MUST be filled')
     }
-    if (!description) {
-      throw new TypeError('description MUST be filled')
-    }
 
     return accountDeposited({number, date, amount: Math.abs(amount), description})
   }
 
-  const withdraw = ({author, amount = 0, date, description}) => {
+  const withdraw = ({author, amount = 0, date, description = null}) => {
     if (!isOpen) {
       throw error.accountNotOpen('account MUST be opened to make a withdrawal')
     }
@@ -71,52 +57,54 @@ const accountMixin = () => {
     if (!date) {
       throw new TypeError('date MUST be filled')
     }
-    if (!description) {
-      throw new TypeError('description MUST be filled')
-    }
 
     return accountWithdrawn({number, date, amount: Math.abs(amount), description})
   }
 
-  return Object.freeze({
-    number: () => number,
-    owner: () => owner,
-    balance: () => balance,
-    version: () => version,
-    events: () => events,
-    load,
+  return Object.freeze(
+    Object.assign(
+      {},
+      aggregate,
+      {
+        number: () => number,
+        owner: () => owner,
+        balance: () => balance,
 
-    handle: ({command}) => {
-      const {type = ''} = command
+        handle: ({command}) => {
+          const {type = ''} = command
 
-      if (type === openAccount.TYPE) {
-        return open(command)
-      } else if (type === depositAccount.TYPE) {
-        return deposit(command)
-      } else if (type === withdrawAccount.TYPE) {
-        return withdraw(command)
+          if (type === openAccount.TYPE) {
+            return open(command)
+          }
+          if (type === depositAccount.TYPE) {
+            return deposit(command)
+          }
+          if (type === withdrawAccount.TYPE) {
+            return withdraw(command)
+          }
+
+          throw new TypeError(`Unknown "${type}" command`)
+        },
+
+        apply: ({event}) => {
+          const {type = ''} = event
+
+          if (type === accountOpened.TYPE) {
+            isOpen = true
+            number = event.attributes && event.attributes.number
+            owner = event.attributes && event.attributes.owner
+            balance = event.attributes && event.attributes.initialBalance
+          } else if (type === accountDeposited.TYPE) {
+            balance += event.attributes && event.attributes.amount
+          } else if (type === accountWithdrawn.TYPE) {
+            balance -= event.attributes && event.attributes.amount
+          } else {
+            throw new TypeError(`Unknown "${type}" event`)
+          }
+        }
       }
-
-      throw new TypeError(`Unknown "${type}" command`)
-    },
-
-    apply: ({event}) => {
-      const {type = ''} = event
-
-      if (type === accountOpened.TYPE) {
-        isOpen = true
-        number = event.attributes && event.attributes.number
-        owner = event.attributes && event.attributes.owner
-        balance = event.attributes && event.attributes.initialBalance
-      } else if (type === accountDeposited.TYPE) {
-        balance += event.attributes && event.attributes.amount
-      } else if (type === accountWithdrawn.TYPE) {
-        balance -= event.attributes && event.attributes.amount
-      } else {
-        throw new TypeError(`Unknown "${type}" event`)
-      }
-    }
-  })
+    )
+  )
 }
 
 module.exports = accountMixin

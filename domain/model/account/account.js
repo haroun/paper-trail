@@ -13,7 +13,7 @@ const accountMixin = () => {
   let balance = 0
   let isOpen = false
 
-  const open = ({number = '', owner = '', initialBalance = 0}) => {
+  const open = ({number = '', owner = '', initialBalance = null}) => {
     if (number === '') {
       throw new TypeError('number MUST be filled')
     }
@@ -93,7 +93,7 @@ const accountMixin = () => {
             isOpen = true
             number = event.attributes && event.attributes.number
             owner = event.attributes && event.attributes.owner
-            balance = event.attributes && event.attributes.initialBalance
+            balance = event.attributes && event.attributes.balance
           } else if (type === accountDeposited.TYPE) {
             balance += event.attributes && event.attributes.amount
           } else if (type === accountWithdrawn.TYPE) {

@@ -6,8 +6,10 @@ const openAccount = require('./open-account')
 const depositAccount = require('./deposit-account')
 const withdrawAccount = require('./withdraw-account')
 const error = require('./error')
+const entry = require('./entry')
 
 const accountMixin = () => {
+  const entries = []
   let number = null
   let owner = null
   let balance = 0
@@ -61,6 +63,8 @@ const accountMixin = () => {
     return accountWithdrawn({number, date, amount: Math.abs(amount), description})
   }
 
+  const addEntry = ({amount, description, date}) => entries.push(entry({amount, description, date}))
+
   return Object.freeze(
     Object.assign(
       {},
@@ -69,6 +73,7 @@ const accountMixin = () => {
         number: () => number,
         owner: () => owner,
         balance: () => balance,
+        entries: () => entries,
 
         handle: ({command}) => {
           const {type = ''} = command
@@ -101,6 +106,12 @@ const accountMixin = () => {
           } else {
             throw new TypeError(`Unknown "${type}" event`)
           }
+
+          addEntry({
+            amount: event.attributes.amount,
+            description: event.attributes.description,
+            date: event.attributes.date
+          })
         }
       }
     )

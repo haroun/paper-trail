@@ -1,30 +1,30 @@
-const uuid = require('./uuid')
+const error = require('./error')
 
 const eventMixin = ({
-  id = null,
   version = -1,
   type = null,
   occuredAt = null
 } = {}) => {
-  if (version === -1) {
-    throw new TypeError('version cannot be null')
+  const isProcessed = false
+
+  if (!Number.isInteger(version) || version === -1) {
+    throw error.eventInvalidVersion('version MUST be a number')
   }
   if (type === null) {
-    throw new TypeError('type cannot be null')
+    throw error.eventInvalidType('type cannot be null')
   }
   if (occuredAt === null) {
-    throw new TypeError('occuredAt cannot be null')
+    throw error.eventInvalidOccuredAt('occuredAt cannot be null')
   }
 
-  id = id || uuid.generate()
   const noticedAt = Date.now()
 
   return Object.freeze({
-    id: () => id,
-    type: () => type,
-    version: () => version,
-    occuredAt: () => occuredAt,
-    noticedAt: () => noticedAt
+    version,
+    type,
+    occuredAt,
+    noticedAt,
+    isProcessed: () => isProcessed
   })
 }
 

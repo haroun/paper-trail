@@ -2,12 +2,11 @@ const event = require('./../event')
 
 const TYPE = 'account-opened'
 
-const accountOpened = ({number, owner, balance}) => Object.freeze(
+const accountOpened = ({version, number, date, owner, balance}) => Object.freeze(
   Object.assign(
     {},
-    event,
+    event({version, type: TYPE, occuredAt: date}),
     {
-      type: TYPE,
       attributes: {
         number,
         owner,

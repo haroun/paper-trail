@@ -1,13 +1,19 @@
-const type = 'open-account'
+const command = require('../command')
 
-const openAccount = ({number, owner, initialBalance}) => Object.freeze(
-  {
-    type,
-    number,
-    owner,
-    initialBalance
-  }
+const TYPE = 'open-account'
+
+const openAccount = ({version, number, date, owner, initialBalance}) => Object.freeze(
+  Object.assign(
+    {},
+    command({version, type: TYPE}),
+    {
+      number,
+      date,
+      owner,
+      initialBalance
+    }
+  )
 )
 
 module.exports = openAccount
-module.exports.TYPE = type
+module.exports.TYPE = TYPE

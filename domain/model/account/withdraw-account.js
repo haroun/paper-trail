@@ -1,14 +1,20 @@
-const type = 'withdraw-account'
+const command = require('../command')
 
-const withdrawAccount = ({number, author, amount, date}) => Object.freeze(
-  {
-    type,
-    number,
-    author,
-    amount,
-    date
-  }
+const TYPE = 'withdraw-account'
+
+const withdrawAccount = ({version, number, date, amount, description, author}) => Object.freeze(
+  Object.assign(
+    {},
+    command({version, type: TYPE}),
+    {
+      number,
+      date,
+      amount,
+      description,
+      author
+    }
+  )
 )
 
 module.exports = withdrawAccount
-module.exports.TYPE = type
+module.exports.TYPE = TYPE

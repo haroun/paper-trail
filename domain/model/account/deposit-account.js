@@ -1,14 +1,20 @@
-const type = 'deposit-account'
+const command = require('../command')
 
-const depositAccount = ({number, author, amount, date}) => Object.freeze(
-  {
-    type,
-    number,
-    author,
-    amount,
-    date
-  }
+const TYPE = 'deposit-account'
+
+const depositAccount = ({version, number, date, amount, description, author}) => Object.freeze(
+  Object.assign(
+    {},
+    command({version, type: TYPE}),
+    {
+      number,
+      date,
+      amount,
+      description,
+      author
+    }
+  )
 )
 
 module.exports = depositAccount
-module.exports.TYPE = type
+module.exports.TYPE = TYPE

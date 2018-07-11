@@ -8,7 +8,7 @@ test('account-deposited event', assert => {
   const number = '123'
   const date = Date.now()
   const amount = 12000
-  const description = 'income'
+  const description = 'expense'
 
   const actual = accountDeposited({version, number, date, amount, description})
   const expected = {

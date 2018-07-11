@@ -1,5 +1,4 @@
 const test = require('tape')
-const uuid = require('./../uuid')
 const account = require('./account')
 const accountOpened = require('./account-opened')
 const openAccount = require('./open-account')
@@ -11,19 +10,27 @@ const withdrawAccount = require('./withdraw-account')
 test('open an account', assert => {
   const message = 'account-opened event'
 
-  const number = uuid.generate()
+  const version = 1
+  const number = '1234'
+  const date = Date.now()
   const owner = 'test'
   const initialBalance = 1000
 
   const actual = account().handle({
     command: openAccount({
+      version,
       number,
+      date,
       owner,
       initialBalance
     })
   })
   const expected = {
+    version,
     type: accountOpened.TYPE,
+    occurredAt: date,
+    noticedAt: actual.noticedAt,
+    isProcessed: actual.isProcessed,
     attributes: {
       number,
       owner,
@@ -39,14 +46,18 @@ test('open an account', assert => {
 test('can not open an account without initialBalance', assert => {
   const message = 'must provide initalBalance'
 
-  const number = uuid.generate()
+  const version = 1
+  const number = '1234'
+  const date = Date.now()
   const owner = 'test'
   const initialBalance = null
 
   try {
     account().handle({
       command: openAccount({
+        version,
         number,
+        date,
         owner,
         initialBalance
       })
@@ -66,18 +77,22 @@ test('can not open an account without initialBalance', assert => {
 test('can not deposit a non opened account', assert => {
   const message = 'must open account first before deposit'
 
-  const number = uuid.generate()
-  const author = 'test'
+  const version = 1
+  const number = '1234'
+  const date = Date.now()
   const amount = 12000
-  const date = '1234567890'
+  const description = 'income'
+  const author = 'test'
 
   try {
     account().handle({
       command: depositAccount({
+        version,
         number,
-        author,
+        date,
         amount,
-        date
+        description,
+        author
       })
     })
 
@@ -95,14 +110,19 @@ test('can not deposit a non opened account', assert => {
 test('deposit an account', assert => {
   const message = 'account-deposited event'
 
-  const number = uuid.generate()
-  const author = 'test'
+  const version = 1
+  const number = '1234'
+  const date = Date.now()
   const amount = 12000
-  const date = '1234567890'
+  const description = 'income'
+  const author = 'test'
+
   const ownerAccount = account()
   ownerAccount.apply({
     event: accountOpened({
+      version: 1,
       number,
+      date,
       owner: author,
       balance: 0
     })
@@ -110,19 +130,24 @@ test('deposit an account', assert => {
 
   const actual = ownerAccount.handle({
     command: depositAccount({
-      number,
-      author,
-      amount,
-      date
-    })
-  })
-  const expected = {
-    type: accountDeposited.TYPE,
-    attributes: {
+      version,
       number,
       date,
       amount,
-      description: null
+      description,
+      author
+    })
+  })
+  const expected = {
+    version,
+    type: accountDeposited.TYPE,
+    occurredAt: date,
+    noticedAt: actual.noticedAt,
+    isProcessed: actual.isProcessed,
+    attributes: {
+      number,
+      amount,
+      description
     }
   }
 
@@ -134,16 +159,22 @@ test('deposit an account', assert => {
 test('can not withdraw a non opened account', assert => {
   const message = 'must open account first before withdraw'
 
-  const number = uuid.generate()
-  const author = 'test'
+  const version = 1
+  const number = '1234'
+  const date = Date.now()
   const amount = 12000
+  const description = 'expense'
+  const author = 'test'
 
   try {
     account().handle({
       command: withdrawAccount({
+        version,
         number,
-        author,
-        amount
+        date,
+        amount,
+        description,
+        author
       })
     })
 
@@ -161,14 +192,19 @@ test('can not withdraw a non opened account', assert => {
 test('withdraw an account', assert => {
   const message = 'account-withdrawn event'
 
-  const number = uuid.generate()
-  const author = 'test'
+  const version = 1
+  const number = '1234'
+  const date = Date.now()
   const amount = 999
-  const date = '123456790'
+  const description = 'expense'
+  const author = 'test'
+
   const ownerAccount = account()
   ownerAccount.apply({
     event: accountOpened({
+      version: 1,
       number,
+      date,
       owner: author,
       balance: 0
     })
@@ -176,19 +212,24 @@ test('withdraw an account', assert => {
 
   const actual = ownerAccount.handle({
     command: withdrawAccount({
+      version,
       number,
-      author,
+      date,
       amount,
-      date
+      description,
+      author
     })
   })
   const expected = {
+    version,
     type: accountWithdrawn.TYPE,
+    occurredAt: date,
+    noticedAt: actual.noticedAt,
+    isProcessed: actual.isProcessed,
     attributes: {
       number,
       amount,
-      date,
-      description: null
+      description
     }
   }
 
@@ -197,11 +238,13 @@ test('withdraw an account', assert => {
   assert.end()
 })
 
-test('What component aspect are you testing?', assert => {
+test('account initial balance', assert => {
   const ownerAccount = account()
 
   ownerAccount.apply({event: accountOpened({
+    version: 1,
     number: 12345,
+    date: Date.now(),
     owner: {},
     balance: 10
   })})
@@ -220,23 +263,28 @@ test('account balance after initialBalance, deposit and withdrawal', assert => {
   const ownerAccount = account()
 
   ownerAccount.apply({event: accountOpened({
+    version: 1,
     number: 12345,
+    date: Date.now(),
     owner: {},
     balance: 10
   })})
   ownerAccount.apply({event: accountDeposited({
+    version: 1,
     number: 123,
     date: Date.now(),
     amount: 100,
     description: 'income'
   })})
   ownerAccount.apply({event: accountDeposited({
+    version: 2,
     number: 456,
     date: Date.now(),
     amount: 20,
     description: 'cash'
   })})
   ownerAccount.apply({event: accountWithdrawn({
+    version: 1,
     number: 789,
     date: Date.now(),
     amount: 30,

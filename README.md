@@ -9,28 +9,57 @@ I need the insight, I don't want ever to spent few hours at the end of each mont
 I did it a few times, and I found the process kind of boring and repetitive.
 
 Here comes `paper-trail`.
-The idea, because we live in a "monde de bisounours" is to provide a PDF file with all the accounting transactions of the month and then tag each entries.
-Next month I provide and new file, and I tag only new entries.
+The idea is to provide a QIF file with all the accounting transactions of the month and then tag each entries.
+Next month I provide and new file, and I'll tag only the new ones.
 `paper-trail` is smart enough to figure out that one entry looks similar to a previous and tag it automatically.
 
 `paper-trail` uses event-sourcing in its core, somewhere.
 
+
+## Events
+
+Events and commands use optimistic locking
+
+*   account-opened
+*   account-withdrawn
+*   account-deposited
+
+
+## Commands
+
+*   open-account
+*   withdraw-account
+*   deposit-account
+
+
+## Exceptions
+
+*   account not open
+*   entry invalid type
+*   entry invalid version
+*   event invalid type
+*   event invalid occurred at
+
+
 ## Structure
 
 *   [ ] Owner
-  *   [ ] register(firstname, lastname) => owner-registered (firstname, lastname, occuredAt)
+  *   [ ] register(firstname, lastname) => owner-registered (firstname, lastname, occurredAt)
 *   [ ] Account
-  *   [ ] open(number, name, owner, initialBalance) => account-opened (number, name, owner, initialBalance, occuredAt)
-  *   [ ] sync(transactions) => account-synced(number, transactions, occuredAt)
-  *   [ ] deposit(amount, description, occuredAt) => account-deposited (number, transactionHash, hash, amount, description, occuredAt, noticedAt)
-  *   [ ] withdraw(amount, description, occuredAt) => account-withdrawn (number, transactionHash, amount, description, occuredAt, noticedAt)
+  *   [ ] open(number, name, owner, initialBalance) => account-opened (number, name, owner, initialBalance, occurredAt)
+  *   [ ] sync(transactions) => account-synced(number, transactions, occurredAt)
+  *   [ ] deposit(amount, description, occurredAt) => account-deposited (number, transactionHash, hash, amount, description, occurredAt, noticedAt)
+  *   [ ] withdraw(amount, description, occurredAt) => account-withdrawn (number, transactionHash, amount, description, occurredAt, noticedAt)
 *   [x] Tag
-  *   [x] register(name, owner) => tag-registered(name, owner, occuredAt)
+  *   [x] register(name, owner) => tag-registered(name, owner, occurredAt)
 *   [ ] Rule
-  *   [ ] register(name, match, tag, owner) => rule-registered (name, match, tag, owner, occuredAt)
+  *   [ ] register(name, match, tag, owner) => rule-registered (name, match, tag, owner, occurredAt)
 *   [ ] Transaction
   *   [ ] applyRule(rule) => rule-applied(rule)
 
+## Notes
+
+```
 UserInterface
   Command
     SyncAccount: payload => ({name: 'sync-account', payload})
@@ -41,3 +70,4 @@ Application
 Domain
   Model: check business rules, return event or throw error if broken
     handle command & apply event
+```

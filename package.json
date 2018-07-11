@@ -36,8 +36,9 @@
         "after",
         {
           "overrides": {
-            "?": "ignore",
-            ":": "ignore"
+            "?": "before",
+            ":": "before",
+            "||": "before"
           }
         }
       ]

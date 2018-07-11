@@ -8,22 +8,22 @@ test('parse qif file', assert => {
   const expected = [
     {
       date: '31/12/2017',
-      amount: '-47.60',
+      amount: -4760,
       description: 'CARTE 25/11/2017 UNIQLO LYON CAR'
     },
     {
       date: '06/12/2017',
-      amount: '-50.00',
+      amount: -5000,
       description: 'RETRAIT DAB 03/12/2017 LYON GROS CAILLOU'
     },
     {
       date: '05/12/2017',
-      amount: '-19.50',
+      amount: -1950,
       description: 'PRLV SEPA FIECI CGC : FR53ZZZ003421 ++80117620 DE FIECI CGC : ++80117620 FR53ZZZ003421'
     },
     {
       date: '01/12/2017',
-      amount: '3175.49',
+      amount: 317549,
       description: 'VIREMENT SEPA RECU SCIENTIFIC GAMES FRANCE SALAIRE 2017 11'
     }
   ]

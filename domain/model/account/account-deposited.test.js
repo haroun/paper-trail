@@ -14,7 +14,7 @@ test('account-deposited event', assert => {
   const expected = {
     version,
     type: accountDeposited.TYPE,
-    occuredAt: date,
+    occurredAt: date,
     noticedAt: actual.noticedAt,
     isProcessed: actual.isProcessed,
     attributes: {

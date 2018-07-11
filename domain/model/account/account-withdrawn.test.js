@@ -14,7 +14,7 @@ test('account-withdrawn event', assert => {
   const expected = {
     version,
     type: accountWithdrawn.TYPE,
-    occuredAt: date,
+    occurredAt: date,
     noticedAt: actual.noticedAt,
     isProcessed: actual.isProcessed,
     attributes: {

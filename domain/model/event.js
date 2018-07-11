@@ -3,7 +3,7 @@ const error = require('./error')
 const eventMixin = ({
   version = -1,
   type = null,
-  occuredAt = null
+  occurredAt = null
 } = {}) => {
   const isProcessed = false
 
@@ -13,8 +13,8 @@ const eventMixin = ({
   if (type === null) {
     throw error.eventInvalidType('type cannot be null')
   }
-  if (occuredAt === null) {
-    throw error.eventInvalidOccuredAt('occuredAt cannot be null')
+  if (occurredAt === null) {
+    throw error.eventInvalidOccurredAt('occurredAt cannot be null')
   }
 
   const noticedAt = Date.now()
@@ -22,7 +22,7 @@ const eventMixin = ({
   return Object.freeze({
     version,
     type,
-    occuredAt,
+    occurredAt,
     noticedAt,
     isProcessed: () => isProcessed
   })

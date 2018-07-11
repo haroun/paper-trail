@@ -5,7 +5,7 @@ const TYPE = 'account-withdrawn'
 const accountWithdrawn = ({version, number, date, amount, description}) => Object.freeze(
   Object.assign(
     {},
-    event({version, type: TYPE, occuredAt: date}),
+    event({version, type: TYPE, occurredAt: date}),
     {
       attributes: {
         number,

@@ -14,7 +14,7 @@ test('account-opened event', assert => {
   const expected = {
     version,
     type: accountOpened.TYPE,
-    occuredAt: date,
+    occurredAt: date,
     noticedAt: actual.noticedAt,
     isProcessed: actual.isProcessed,
     attributes: {

@@ -81,18 +81,18 @@ test('event-invalid-type', assert => {
   assert.end()
 })
 
-test('event-invalid-occured-at', assert => {
-  const message = 'should return an event-invalid-occured-at error'
+test('event-invalid-occurred-at', assert => {
+  const message = 'should return an event-invalid-occurred-at error'
 
   const errorMessage = 'invalid'
-  const err = error.eventInvalidOccuredAt(errorMessage)
+  const err = error.eventInvalidOccurredAt(errorMessage)
 
   const actual = {
     name: err.name,
     message: err.message
   }
   const expected = {
-    name: 'event-invalid-occured-at',
+    name: 'event-invalid-occurred-at',
     message: errorMessage
   }
 

@@ -6,13 +6,13 @@ test('event', assert => {
 
   const version = 9
   const type = 'test'
-  const occuredAt = Date.now()
+  const occurredAt = Date.now()
 
-  const actual = event({version, type, occuredAt})
+  const actual = event({version, type, occurredAt})
   const expected = {
     version,
     type,
-    occuredAt,
+    occurredAt,
     noticedAt: actual.noticedAt,
     isProcessed: actual.isProcessed
   }
@@ -27,10 +27,10 @@ test('invalid version', assert => {
 
   const version = null
   const type = 'test'
-  const occuredAt = Date.now()
+  const occurredAt = Date.now()
 
   try {
-    event({version, type, occuredAt})
+    event({version, type, occurredAt})
 
     assert.fail(message)
   } catch (err) {
@@ -48,10 +48,10 @@ test('invalid type', assert => {
 
   const version = 9
   const type = null
-  const occuredAt = Date.now()
+  const occurredAt = Date.now()
 
   try {
-    event({version, type, occuredAt})
+    event({version, type, occurredAt})
 
     assert.fail(message)
   } catch (err) {
@@ -64,20 +64,20 @@ test('invalid type', assert => {
   }
 })
 
-test('invalid occuredAt', assert => {
-  const message = 'must set occuredAt'
+test('invalid occurredAt', assert => {
+  const message = 'must set occurredAt'
 
   const version = 9
   const type = 'test'
-  const occuredAt = null
+  const occurredAt = null
 
   try {
-    event({version, type, occuredAt})
+    event({version, type, occurredAt})
 
     assert.fail(message)
   } catch (err) {
     const actual = err.name
-    const expected = 'event-invalid-occured-at'
+    const expected = 'event-invalid-occurred-at'
 
     assert.equal(actual, expected, message)
 

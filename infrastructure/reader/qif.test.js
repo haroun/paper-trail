@@ -19,12 +19,12 @@ test('parse qif file', assert => {
     {
       date: '05/12/2017',
       amount: -1950,
-      description: 'PRLV SEPA FIECI CGC : FR53ZZZ003421 ++80117620 DE FIECI CGC : ++80117620 FR53ZZZ003421'
+      description: 'PRLV SEPA XXXX XXXX : XXXX XXXX : XXXX XXXX'
     },
     {
       date: '01/12/2017',
       amount: 317549,
-      description: 'VIREMENT SEPA RECU SCIENTIFIC GAMES FRANCE SALAIRE 2017 11'
+      description: 'VIREMENT SEPA RECU XXXX XXXX XXXX'
     }
   ]
 

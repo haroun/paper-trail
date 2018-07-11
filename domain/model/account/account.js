@@ -5,7 +5,7 @@ const accountWithdrawn = require('./account-withdrawn')
 const openAccount = require('./open-account')
 const depositAccount = require('./deposit-account')
 const withdrawAccount = require('./withdraw-account')
-const error = require('./error')
+const error = require('./../error')
 const entry = require('./entry')
 
 const accountMixin = () => {
@@ -26,7 +26,7 @@ const accountMixin = () => {
       throw new TypeError('initialBalance MUST be a number')
     }
 
-    return accountOpened({number, owner, balance: initialBalance})
+    return accountOpened({version, number, owner, balance: initialBalance})
   }
 
   const deposit = ({author, amount = 0, date, description = null}) => {
@@ -43,7 +43,7 @@ const accountMixin = () => {
       throw new TypeError('date MUST be filled')
     }
 
-    return accountDeposited({number, date, amount: Math.abs(amount), description})
+    return accountDeposited({version, number, date, amount: Math.abs(amount), description})
   }
 
   const withdraw = ({author, amount = 0, date, description = null}) => {
@@ -60,10 +60,12 @@ const accountMixin = () => {
       throw new TypeError('date MUST be filled')
     }
 
-    return accountWithdrawn({number, date, amount: Math.abs(amount), description})
+    return accountWithdrawn({version, number, date, amount: Math.abs(amount), description})
   }
 
-  const addEntry = ({amount, description, date}) => entries.push(entry({amount, description, date}))
+  const addEntry = ({type, amount, description, date}) => entries.push(
+    entry({type, amount, description, date})
+  )
 
   return Object.freeze(
     Object.assign(
@@ -93,21 +95,26 @@ const accountMixin = () => {
 
         apply: ({event}) => {
           const {type = ''} = event
+          let entryType
 
           if (type === accountOpened.TYPE) {
             isOpen = true
             number = event.attributes && event.attributes.number
             owner = event.attributes && event.attributes.owner
             balance = event.attributes && event.attributes.balance
+            entryType = entry.TYPE_DEPOSIT
           } else if (type === accountDeposited.TYPE) {
             balance += event.attributes && event.attributes.amount
+            entryType = entry.TYPE_DEPOSIT
           } else if (type === accountWithdrawn.TYPE) {
             balance -= event.attributes && event.attributes.amount
+            entryType = entry.TYPE_WITHDRAWAL
           } else {
             throw new TypeError(`Unknown "${type}" event`)
           }
 
           addEntry({
+            type: entryType,
             amount: event.attributes.amount,
             description: event.attributes.description,
             date: event.attributes.date

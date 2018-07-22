@@ -75,9 +75,47 @@ const accountMixin = () => {
     return accountWithdrawn({version, number, date, amount: Math.abs(amount), description})
   }
 
-  const addEntry = ({type, amount, description, date}) => entries.push(
-    entry({type, amount, description, date})
-  )
+  const addEntry = ({type, amount, description, date}) => {
+    const newEntry = entry({type, amount, description, date})
+
+    entries.push(newEntry)
+
+    return newEntry
+  }
+
+  const applyAccountOpened = event => {
+    isOpen = true
+    number = event.attributes && event.attributes.number
+    owner = event.attributes && event.attributes.owner
+    balance = event.attributes && event.attributes.balance
+
+    return addEntry({
+      type: entry.TYPE_DEPOSIT,
+      amount: event.attributes.balance,
+      description: accountOpened.TYPE,
+      date: event.occurredAt
+    })
+  }
+  const applyAccountDeposited = event => {
+    balance += event.attributes && event.attributes.amount
+
+    return addEntry({
+      type: entry.TYPE_DEPOSIT,
+      amount: event.attributes.amount,
+      description: event.attributes.description,
+      date: event.occurredAt
+    })
+  }
+  const applyAccountWithdrawn = event => {
+    balance -= event.attributes && event.attributes.amount
+
+    return addEntry({
+      type: entry.TYPE_WITHDRAWAL,
+      amount: event.attributes.amount,
+      description: event.attributes.description,
+      date: event.occurredAt
+    })
+  }
 
   return Object.freeze(
     Object.assign(
@@ -92,46 +130,32 @@ const accountMixin = () => {
         handle: ({command}) => {
           const {type = ''} = command
 
-          if (type === openAccount.TYPE) {
-            return open(command)
-          }
-          if (type === depositAccount.TYPE) {
-            return deposit(command)
-          }
-          if (type === withdrawAccount.TYPE) {
-            return withdraw(command)
-          }
-
-          throw new TypeError(`Unknown "${type}" command`)
+          return (type === openAccount.TYPE && open(command))
+            || (type === depositAccount.TYPE && deposit(command))
+            || (type === withdrawAccount.TYPE && withdraw(command))
+            || (() => {
+              throw new TypeError(`Unknown "${type}" command`)
+            })()
         },
 
         apply: ({event}) => {
           const {type = ''} = event
-          let entryType
 
-          if (type === accountOpened.TYPE) {
-            isOpen = true
-            number = event.attributes && event.attributes.number
-            owner = event.attributes && event.attributes.owner
-            balance = event.attributes && event.attributes.balance
-            entryType = entry.TYPE_DEPOSIT
-          } else if (type === accountDeposited.TYPE) {
-            balance += event.attributes && event.attributes.amount
-            entryType = entry.TYPE_DEPOSIT
-          } else if (type === accountWithdrawn.TYPE) {
-            balance -= event.attributes && event.attributes.amount
-            entryType = entry.TYPE_WITHDRAWAL
-          } else {
-            throw new TypeError(`Unknown "${type}" event`)
-          }
+          return (type === accountOpened.TYPE && applyAccountOpened(event))
+            || (type === accountDeposited.TYPE && applyAccountDeposited(event))
+            || (type === accountWithdrawn.TYPE && applyAccountWithdrawn(event))
+            || (() => {
+              throw new TypeError(`Unknown "${type}" event`)
+            })
+        },
 
-          addEntry({
-            type: entryType,
-            amount: event.attributes.amount,
-            description: event.attributes.description,
-            date: event.attributes.date
-          })
-        }
+        toJSON: () => ({
+          number,
+          owner,
+          balance,
+          entries,
+          isOpen
+        })
       }
     )
   )

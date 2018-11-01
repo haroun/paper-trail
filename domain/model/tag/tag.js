@@ -58,7 +58,11 @@ const tagMixin = (defaults = []) => {
             || (() => {
               throw new TypeError(`Unknown "${type}" event`)
             })
-        }
+        },
+
+        toJSON: () => ({
+          tags
+        })
       }
     )
   )

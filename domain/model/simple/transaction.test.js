@@ -146,3 +146,28 @@ test('transaction with invalid paymentMethod', assert => {
 
   assert.end()
 })
+
+test('transaction with negative amount', assert => {
+  const message = 'should return a transaction with a positive amount'
+
+  const actual = transaction({
+    number: 1,
+    type: transaction.TYPE_DEPOSIT,
+    date: '1970-01-01T00:00:00.001Z',
+    amount: -10,
+    description: 'first',
+    paymentMethod: transaction.PAYMENT_METHOD_TRANSFER
+  })
+  const expected = {
+    number: 1,
+    type: transaction.TYPE_DEPOSIT,
+    date: 1,
+    amount: 10,
+    description: 'first',
+    paymentMethod: transaction.PAYMENT_METHOD_TRANSFER
+  }
+
+  assert.deepEqual(actual, expected, message)
+
+  assert.end()
+})

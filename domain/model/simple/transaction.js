@@ -12,7 +12,7 @@ const transactionMixin = ({number, type, date, amount, description = '', payment
     number,
     type,
     date: Date.parse(date),
-    amount: Number.parseInt(amount, 10),
+    amount: Math.abs(Number.parseInt(amount, 10)),
     description,
     paymentMethod
   }

@@ -2,8 +2,8 @@ const assert = require('assert').strict
 const url = require('url')
 
 const emailRegex = /\S+@\S+\.\S+/
-const UPDATE_AVATAR = 'UPDATE:AVATAR'
-const UPDATE_EMAIL = 'UPDATE:EMAIL'
+const CHANGE_AVATAR = 'OWNER::CHANGE_AVATAR'
+const CHANGE_EMAIL = 'OWNER::CHANGE_EMAIL'
 
 const ownerMixin = ({username, avatar = null, email}) => {
   const state = {
@@ -22,9 +22,9 @@ const ownerMixin = ({username, avatar = null, email}) => {
 const update = ({state, action = {}}) => {
   const {type, data} = action
   switch (type) {
-    case UPDATE_AVATAR:
+    case CHANGE_AVATAR:
       return ownerMixin({...state, avatar: data})
-    case UPDATE_EMAIL:
+    case CHANGE_EMAIL:
       return ownerMixin({...state, email: data})
     default:
       return Object.freeze({...state})
@@ -33,5 +33,5 @@ const update = ({state, action = {}}) => {
 
 module.exports = ownerMixin
 module.exports.update = update
-module.exports.UPDATE_AVATAR = UPDATE_AVATAR
-module.exports.UPDATE_EMAIL = UPDATE_EMAIL
+module.exports.CHANGE_AVATAR = CHANGE_AVATAR
+module.exports.CHANGE_EMAIL = CHANGE_EMAIL

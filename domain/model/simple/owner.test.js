@@ -91,7 +91,7 @@ test('owner update avatar', assert => {
     avatar: 'http://localhost/test',
     email: 'test@test.com'
   })
-  const action = {type: owner.UPDATE_AVATAR, data: 'http://localhost/2'}
+  const action = {type: owner.CHANGE_AVATAR, data: 'http://localhost/2'}
 
   const actual = owner.update({state: testOwner, action})
   const expected = {
@@ -114,7 +114,7 @@ test('owner update email', assert => {
     avatar: 'http://localhost/test',
     email: 'test@test.com'
   })
-  const action = {type: owner.UPDATE_EMAIL, data: 'test2@test.com'}
+  const action = {type: owner.CHANGE_EMAIL, data: 'test2@test.com'}
 
   const actual = owner.update({state: testOwner, action})
   const expected = {

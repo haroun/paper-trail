@@ -1,7 +1,7 @@
 const assert = require('assert').strict
 const url = require('url')
 
-const emailRegex = /\S+@\S+\.\S+/
+const EMAIL_REGEX = /\S+@\S+\.\S+/
 const CHANGE_AVATAR = 'OWNER::CHANGE_AVATAR'
 const CHANGE_EMAIL = 'OWNER::CHANGE_EMAIL'
 
@@ -14,7 +14,7 @@ const ownerMixin = ({username, avatar = null, email}) => {
 
   assert.ok(state.username, 'username is empty')
   assert.ok(url.parse(String(avatar)).host, `Invalid avatar, expecting "url" format, received ${avatar}`)
-  assert.ok(emailRegex.test(state.email), `Invalid email, expected "test@test.test" format, received ${email}`)
+  assert.ok(EMAIL_REGEX.test(state.email), `Invalid email, expected "test@test.test" format, received ${email}`)
 
   return Object.freeze(state)
 }

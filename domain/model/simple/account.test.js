@@ -7,12 +7,12 @@ test('account happy path', assert => {
   const actual = account({
     number: 1,
     owner: 'test',
-    balance: 10
+    initialBalance: 10
   })
   const expected = {
     number: 1,
     owner: 'test',
-    balance: 10,
+    initialBalance: 10,
     transactions: []
   }
 
@@ -28,7 +28,7 @@ test('account with empty number', assert => {
     account({
       number: null,
       owner: 'test',
-      balance: 10
+      initialBalance: 10
     })
 
     assert.fail(message)
@@ -49,7 +49,7 @@ test('account with invalid owner', assert => {
     account({
       number: 1,
       owner: null,
-      balance: 10
+      initialBalance: 10
     })
 
     assert.fail(message)
@@ -70,7 +70,7 @@ test('account with owner must be a string', assert => {
     account({
       number: 1,
       owner: [],
-      balance: 10
+      initialBalance: 10
     })
 
     assert.fail(message)
@@ -84,20 +84,20 @@ test('account with owner must be a string', assert => {
   assert.end()
 })
 
-test('account with invalid balance', assert => {
-  const message = 'should return an invalid balance error'
+test('account with invalid initialBalance', assert => {
+  const message = 'should return an invalid initialBalance error'
 
   try {
     account({
       number: 1,
       owner: 'test',
-      balance: 'invalid'
+      initialBalance: 'invalid'
     })
 
     assert.fail(message)
   } catch (error) {
     const actual = error.message
-    const expected = 'balance invalid, received invalid'
+    const expected = 'initialBalance invalid, received invalid'
 
     assert.equal(actual, expected, message)
   }
@@ -111,20 +111,31 @@ test('account add transaction', assert => {
   const testAccount = account({
     number: 1,
     owner: 'test',
-    balance: 10
+    initialBalance: 10
   })
-  const action = {type: account.ADD_TRANSACTION, data: 'test'}
+  const action = {
+    type: account.ADD_TRANSACTION,
+    data: {
+      number: 1,
+      type: 'DEPOSIT',
+      date: 1,
+      amount: 9,
+      description: 'first',
+      paymentMethod: 'transfer'
+    }
+  }
 
   const actual = account.update({state: testAccount, action})
   const expected = {
     number: 1,
     owner: 'test',
-    balance: 10,
-    transactions: ['test']
+    initialBalance: 10,
+    transactions: [action.data]
   }
 
   assert.deepEqual(actual, expected, message)
   assert.notDeepEqual(testAccount, actual, 'should not mutate original account')
+  assert.equal(account.balance(actual), 19, 'should return initialBalance + sum of all transactions')
 
   assert.end()
 })

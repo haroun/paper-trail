@@ -24,8 +24,8 @@
   "homepage": "https://github.com/haroun/paper-trail#readme",
   "devDependencies": {
     "faucet": "0.0.1",
-    "tape": "^4.9.1",
-    "xo": "^0.21.1"
+    "tape": "^4.10.1",
+    "xo": "^0.24.0"
   },
   "xo": {
     "space": true,
@@ -45,6 +45,6 @@
     }
   },
   "dependencies": {
-    "cuid": "^2.1.1"
+    "cuid": "^2.1.6"
   }
 }
